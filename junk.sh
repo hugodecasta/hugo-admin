@@ -1,0 +1,16 @@
+curl 'https://keydb.hugocastaneda.fr/api/key/clients' \
+  -H 'Connection: keep-alive' \
+  -H 'Pragma: no-cache' \
+  -H 'Cache-Control: no-cache' \
+  -H 'sec-ch-ua: " Not A;Brand";v="99", "Chromium";v="99", "Google Chrome";v="99"' \
+  -H 'sec-ch-ua-mobile: ?0' \
+  -H 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.84 Safari/537.36' \
+  -H 'sec-ch-ua-platform: "Windows"' \
+  -H 'Accept: */*' \
+  -H 'Sec-Fetch-Site: same-origin' \
+  -H 'Sec-Fetch-Mode: cors' \
+  -H 'Sec-Fetch-Dest: empty' \
+  -H 'Referer: https://keydb.hugocastaneda.fr/keys' \
+  -H 'Accept-Language: fr,en;q=0.9' \
+  -H 'Authorization: xad0VlE9S5o2BUgsrBedmUuhcdG85939r6qyUCn4ynwDIjk8pcAKPs5mba7IQm8K' \
+  --compressed
