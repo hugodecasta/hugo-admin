@@ -98,8 +98,27 @@ const global_database_carrier = new Vue({
 
         // ----------------------- EDIT
 
-        delete_item(table_name, id) {
-            if (!confirm(`delete ${table_name} "${this.item_name_id(table_name, id)}" ?`)) return
+        delete_item(table_name, id, force = false) {
+            if (!force && !confirm(`delete ${table_name} "${this.item_name_id(table_name, id)}" ?`)) return
+            const item = this.table_item(table_name, id)
+            const ref_me = this.items_referencing_me(item, 'project')
+            const ref_tables = Object.keys(ref_me)
+            if (ref_tables.length && !force) {
+                let action_delete = true
+                if (!confirm(`There are still data attached to this ${table_name}: ${ref_tables.join(', ')} delete theme ?`)) {
+                    if (!confirm('Set their reference to null ?')) return
+                    else action_delete = false
+                }
+
+                ref_tables.forEach(ref_table => {
+                    const items = ref_me[ref_table]
+                    if (action_delete) Object.keys(items).forEach(id => this.delete_item(ref_table, id, true))
+                    else Object.values(items).forEach(item => {
+                        const props = Object.keys(item).filter(prop => item[prop] == id)
+                        props.forEach(prop => item[prop] = null)
+                    })
+                })
+            }
             this.$delete(this.table_items(table_name), id)
         },
 
@@ -164,7 +183,11 @@ const global_database_carrier = new Vue({
         // ----------------------- FORMAT
 
         date_format(date) {
-            return format(new Date(date), 'dd/MM/yyyy')
+            try {
+                return format(new Date(date), 'dd/MM/yyyy')
+            } catch (e) {
+                return '- no date -'
+            }
         },
     }
 })

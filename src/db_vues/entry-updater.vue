@@ -7,7 +7,7 @@
                     <entry-displayer
                         elevation="0"
                         :table_name="table_name"
-                        :item="real_adding_object"
+                        :item="update_object"
                         :edit="true"
                         :on_the_fly="true"
                         :show_multis="false"
@@ -17,12 +17,12 @@
                 </form>
                 <v-btn
                     color="primary"
-                    @click="add"
-                >Add</v-btn>
+                    @click="update"
+                >Update</v-btn>
                 <v-btn
                     color="primary"
                     text
-                    @click="$emit('canceled')"
+                    @click="show = false;$emit('canceled')"
                 >cancel</v-btn>
             </v-card-text>
         </v-card>
@@ -31,37 +31,31 @@
 
 <script>
 import entryDisplayer from './entry-displayer.vue'
-import { v4 as uuid } from 'uuid'
 export default {
     components: { entryDisplayer },
-    props: ['table_name', 'set_obj'],
     data: () => ({
         show: false,
-        real_adding_object: {}
+        update_object: null,
+        table_name: null,
     }),
     watch: {
         show() {
             if (!this.show) this.$emit('canceled')
         },
-        set_obj: {
-            handler() {
-                this.$set(this, 'real_adding_object', this.set_obj ?? {})
-            },
-            deep: true,
-            immediate: true
-        }
     },
     methods: {
-        add() {
-            const obj = JSON.parse(JSON.stringify(this.real_adding_object))
-            obj.id = uuid()
-            this.$set(this.$db.data[this.table_name + 's'], obj.id, obj)
-            this.$emit('added', obj)
+        edit(table_name, id) {
+            this.table_name = table_name
+            this.update_object = JSON.parse(JSON.stringify(this.$db.table_item(table_name, id)))
+            this.show = true
+        },
+        update() {
+            const obj = JSON.parse(JSON.stringify(this.update_object))
+            this.$db.update_item(this.table_name, obj)
+            this.$emit('updated', obj)
+            this.show = false
         }
     },
-    mounted() {
-        setTimeout(() => this.show = true, 0)
-    }
 }
 </script>
 

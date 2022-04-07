@@ -26,7 +26,7 @@
 import { mapState } from 'vuex'
 export default {
     data: () => ({
-        forbidden_routes: ['table-edit']
+        forbidden_routes: ['table-edit', 'project']
     }),
     computed: {
         ...mapState(['common']),

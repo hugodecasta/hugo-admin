@@ -170,14 +170,15 @@ export default {
                 if (Array.isArray(if_data)) return if_data.map(eval_if).reduce((a, b) => a && b, true)
                 if (typeof if_data == 'string') {
                     return eval_if(if_data.split(' && ').map(elm => {
-                        const [, prop, comp, value] = /(.*?)(=|<|>)(.*?)$/g.exec(elm)
+                        const [, prop, comp, value] = /(.*?)(=|<|>|!)(.*?)$/g.exec(elm)
                         return { prop, comp, value: JSON.parse(value) }
                     }))
                 }
                 const { prop, comp, value } = if_data
                 const prop_value = this.item[prop]
                 return {
-                    '=': (value == false && !prop_value) || prop_value == value
+                    '=': (value == false && !prop_value) || prop_value == value,
+                    '!': prop_value != value
                 }[comp]
             }
             return eval_if(if_data)
@@ -239,6 +240,10 @@ export default {
     methods: {
         reset() {
             this.tmp = this.value
+            if (this.tmp === undefined) {
+                this.tmp = this.config.def
+                this.$emit('input', this.tmp)
+            }
             if (this.is_array_of && (!this.tmp || !Array.isArray(this.tmp))) this.tmp = []
         },
         validate_tmp() {

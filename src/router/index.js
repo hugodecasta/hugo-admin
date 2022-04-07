@@ -18,8 +18,10 @@ function add_route(name, path) {
 
 add_route('home', '/')
 add_route('connector')
-add_route('budget')
+add_route('estimater')
 add_route('projects')
+add_route('project', '/project/:project_id')
+add_route('budget')
 
 // add_route('clients')
 // add_route('moves')

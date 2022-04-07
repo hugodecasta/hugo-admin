@@ -1,6 +1,21 @@
 <template>
-    <div v-if="count>0">
-        <v-card-title v-if="title">{{title}}</v-card-title>
+    <div>
+        <v-card-title v-if="title">
+            {{title}}
+            <v-btn
+                v-if="add_btn"
+                icon
+                @click="$emit('add')"
+            >
+                <v-icon>mdi-plus</v-icon>
+            </v-btn>
+
+        </v-card-title>
+        <v-card-subtitle
+            v-if="count==0"
+            style="opacity:0.3"
+            class="ml-2"
+        >no data yet</v-card-subtitle>
         <v-expansion-panels>
             <entry-displayer
                 v-for="(item,id) in filtered"
@@ -24,7 +39,7 @@ import EntryDisplayer from '@/db_vues/entry-displayer.vue'
 export default {
     name: 'list-displayer',
     components: { EntryDisplayer },
-    props: ['table_name', 'filters', 'items', 'actionable', 'show_multis', 'dense', 'title'],
+    props: ['table_name', 'filters', 'items', 'actionable', 'show_multis', 'dense', 'title', 'add_btn'],
     computed: {
         filtered() {
             return this.items ?? this.$db.table_items_filtered(this.table_name, this.filters ?? [])

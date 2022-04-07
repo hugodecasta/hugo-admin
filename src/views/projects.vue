@@ -18,7 +18,9 @@
 <script>
 import Project from '@/components/project.vue'
 export default {
-    components: { Project }
+    components: { Project },
+    data: () => ({
+    }),
 }
 </script>
 

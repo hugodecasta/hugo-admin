@@ -80,12 +80,15 @@ export default {
                     name: { type: 'string' },
                     description: { type: 'long-string' },
                     client: { ref: 'client', nullable: true, delete: false },
+                    pending: { type: 'boolean', def: true },
+                    starting_date: { type: 'date', if: 'pending=false' },
                     associates: { array_of: 'associate' },
                     links: { type: 'array' },
-                    labor_hour_cost: { type: 'number' },
-                    hours_spent_prevision: { type: 'number' },
-                    hours_spent_real: { type: 'number' },
-                    ressource_cost: { type: 'number' },
+                    labor_hour_cost: { type: 'number', def: 70 },
+                    hours_spent_prevision: { type: 'number', def: 0 },
+                    hours_spent_real: { type: 'number', def: 0 },
+                    assets_cost_prevision: { type: 'number', def: 0 },
+                    ending_date: { type: 'date', if: 'pending=false && starting_date!null' },
                 },
                 estimate: {
                     number: { type: 'string' },
@@ -127,20 +130,15 @@ export default {
                     description: { type: 'long-string' },
                     type: { select: ['in', 'out'] },
 
-                    taxed: { type: 'boolean', if: { prop: 'type', comp: '=', value: 'in' } },
-                    is_paid_taxe: { type: 'boolean', if: { prop: 'type', comp: '=', value: 'out' } },
+                    taxed: { type: 'boolean', if: 'type="in"' },
+                    is_paid_taxe: { type: 'boolean', if: 'type="out"' },
 
                     invoice: { ref: 'invoice', if: 'type="in" && taxed=true' },
 
-                    taxes_paied: {
-                        array_of: 'taxe', if: [
-                            { prop: 'is_paid_taxe', comp: '=', value: true },
-                            { prop: 'type', comp: '=', value: 'out' }
-                        ]
-                    },
+                    taxes_paied: { array_of: 'taxe', if: 'is_paid_taxe=true && type="out"' },
 
-                    client: { ref: 'client', nullable: true, delete: false, if: { prop: 'type', comp: '=', value: 'in' } },
-                    supplier: { ref: 'supplier', nullable: true, delete: false, if: { prop: 'type', comp: '=', value: 'out' } },
+                    client: { ref: 'client', nullable: true, delete: false, if: 'type="in"' },
+                    supplier: { ref: 'supplier', nullable: true, delete: false, if: 'type="out"' },
                     project: { ref: 'project', nullable: true, delete: false },
 
                     amount: { type: 'number' },
