@@ -40,8 +40,7 @@ export default {
             this.connecting = true
             await this.$keydb_api.auth.connect(this.form)
             this.connecting = false
-            this.$router.push('/')
-            location.reload()
+            location = '/'
         }
     },
     mounted() {

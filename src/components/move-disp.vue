@@ -1,5 +1,6 @@
 <template>
     <v-card
+        light
         outlined
         class="mb-3"
         :disabled="!move_data.past"

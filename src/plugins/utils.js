@@ -1,8 +1,48 @@
+import Vue from 'vue'
+
+const time_state = Vue.observable({ now: Date.now() })
+
+setInterval(() => { Vue.set(time_state, 'now', Date.now()) }, 1000 * 60 * 30)
+
 export default {
     install(vue) {
         vue.mixin({
             beforeCreate() {
                 this.$utils = {
+                    time: time_state,
+                    tasks: {
+                        sort(tasks) {
+                            function task_score(task) {
+                                if (task.done) return 0
+                                if (!task.deadline) return task.started ? 2 : 1
+                                const diff = Date.now() - new Date(task.deadline).getTime()
+                                return 10000 + (diff / 1000000)
+                            }
+                            return tasks.filter(t => !t.archived).sort((t1, t2) => {
+                                return task_score(t2) - task_score(t1)
+                            })
+                        },
+                        assets_to_tasks(assets) {
+                            return assets.map(asset => {
+                                if (asset.delivered) return null
+
+                                return {
+                                    no_action_task: true,
+                                    label: 'Order - ' + asset.label,
+                                    icon: 'package',
+                                    link: '/table/asset/' + asset.id,
+                                    description: 'Order checking for ' + asset.label + '\n' + asset.description,
+                                    project: asset.project,
+                                    deadline: asset.estimated_deliver_date,
+                                    started: true,
+                                    start_date: asset.order_date,
+                                    done: false,
+                                    end_date: null,
+                                }
+
+                            }).filter(e => e)
+                        }
+                    },
                     money: {
                         add_taxe(amount, taxe_rate) {
                             return amount / (1 - taxe_rate)

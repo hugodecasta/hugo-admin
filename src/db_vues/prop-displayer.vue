@@ -9,6 +9,15 @@
             ></v-text-field>
             <v-card-text v-else> <b>{{prop_final_name}}</b>: {{value}}</v-card-text>
         </span>
+        <span v-if="type == 'phone'">
+            <v-text-field
+                :label="prop_final_name"
+                v-if="edit"
+                v-model="tmp"
+                @keydown.enter="validate_tmp"
+            ></v-text-field>
+            <v-card-text v-else> <b>{{prop_final_name}}</b>: <a :href="'tel:'+value">{{value}}</a></v-card-text>
+        </span>
         <span v-else-if="type == 'long-string'">
             <v-textarea
                 :label="prop_final_name"
@@ -58,7 +67,17 @@
                 @change="validate_tmp"
             >
             </v-select>
-            <v-card-text v-else> <b>{{prop_final_name}}</b>: {{ref_name}}</v-card-text>
+            <v-card-text
+                v-else
+                style="info--text"
+            >
+                <b>{{prop_final_name}}</b>:
+                <router-link
+                    :to="'/table/'+ref_table+'/'+value"
+                    v-if="ref_object"
+                >{{ref_name}}</router-link>
+                <span v-else>{{ref_name}}</span>
+            </v-card-text>
         </span>
         <span v-else-if="is_select">
             <v-select

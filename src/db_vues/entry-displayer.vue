@@ -37,6 +37,7 @@
                                         :items="ref_items"
                                         :actionable="false"
                                         :show_multis="false"
+                                        :dense="true"
                                     ></list-displayer>
                                 </v-expansion-panel-content>
                             </v-expansion-panel>

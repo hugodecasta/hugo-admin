@@ -55,7 +55,10 @@ const global_database_carrier = new Vue({
         },
         update_item(table_name, item) {
             this.check_init()
-            this.$set(this.table_items(table_name), item.id, item)
+            const props = Object.keys(this.config.data[table_name])
+            const obj = { id: item.id, ...Object.fromEntries(props.map(prop => [prop, item[prop]])) }
+            console.log('update', obj, table_name)
+            this.$set(this.table_items(table_name), item.id, obj)
         },
 
         // ----------------------- SUBS
@@ -71,6 +74,7 @@ const global_database_carrier = new Vue({
         item_name(table_name, item) {
             if (!item) return undefined
             const namer = this.table_namer(table_name)
+            if (!namer) return '<missing item name pattern>'
             const name = namer.replace(/\$\{(.*?)\}/g, (m, g) => item[g])
             return name
         },
@@ -101,7 +105,7 @@ const global_database_carrier = new Vue({
         delete_item(table_name, id, force = false) {
             if (!force && !confirm(`delete ${table_name} "${this.item_name_id(table_name, id)}" ?`)) return
             const item = this.table_item(table_name, id)
-            const ref_me = this.items_referencing_me(item, 'project')
+            const ref_me = this.items_referencing_me(item, table_name)
             const ref_tables = Object.keys(ref_me)
             if (ref_tables.length && !force) {
                 let action_delete = true
@@ -196,11 +200,12 @@ const global_database_carrier = new Vue({
 
 class KEYDBAPI {
 
-    constructor(api_host = 'https://keydb.hugocastaneda.fr') {
+    constructor(api_host = 'https://keydb.hugocastaneda.fr', contact_api_host = 'https://contacter.hugocastaneda.fr') {
         this.credentials = null
         this.socket = io(api_host)
         this.key_api_host = api_host + '/api/key'
         this.api_host = api_host
+        this.contact_api_host = contact_api_host
     }
 
 
@@ -289,6 +294,23 @@ class KEYDBAPI {
         return await resp.text()
     }
 
+    async __contact_api(endpoint, method, data, headers, data_format = 'json') {
+        headers = headers ?? {}
+        const options = { method, headers }
+        if (data) {
+            headers['Content-type'] = {
+                'json': 'application/json',
+                'text': 'text/plain'
+            }[data_format] ?? data_format
+            options.body = data_format == 'json' ? JSON.stringify(data) : data
+        }
+        options.headers = { ...options.headers, ...this.create_auth_header() }
+        const resp = await fetch(this.contact_api_host + '/' + endpoint, options)
+        if (!resp.ok) throw new Error(await resp.text())
+        if (resp.headers.get('content-type').includes('application/json')) return await resp.json()
+        return await resp.text()
+    }
+
     async __key_api(endpoint, method, data, headers, data_format = 'json') {
         headers = headers ?? {}
         const options = { method, headers }
@@ -336,6 +358,11 @@ class KEYDBAPI {
 
     create_auth_header() {
         return { 'Authorization': localStorage.getItem('db_auth_token') ?? undefined }
+    }
+
+    contact = {
+        email: (contact, subject, html) => this.__contact_api("api/send/email", "post", { contact, data: { subject, html } },),
+        sms: (contact, text) => this.__contact_api("api/send/sms", "post", { contact, data: { text } },),
     }
 
     auth = {

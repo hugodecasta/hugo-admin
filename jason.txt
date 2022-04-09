@@ -1,0 +1,214 @@
+Г'юго "Doudou" @hugocastaneda
+11:55
+on l'a d'écrit dans un doc de charte tout ces trucs là ?
+
+
+Jason Valax @jasonvalax
+12:12
+Non pour l'instant, c'est totalement Ad-hoc et ça n'a même pas vraiment la prétention de se vouloir déterminant d'une charte durable.
+
+Tout pourra être remis en question dès lors qu'on aura soit :
+- Un vrai expert UI/UX
+- Accumulé des données ou tout du moins du recul sur la manière d'améliorer ça.
+- Les ressources (principalement le temps) pour accomplir une démarche rigoureuse.
+
+Je sais que c'est une approche très contestable mais, en ce qui me concerne, je ne pourrai pas faire plus sans que ça n'affecte ma capacité à prendre en charge les autres trucs qui m'incombent.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+12:16
+Mais du coup ça se base sur aucune recherche même minim, faisable rapidement ? Ca se base sur quoi les décisions d'implems ? Si on a pas de document à quoi on et l'expert UI/UX va se référer pour savoir pourquoi tel ou tel truc a été mis en place. Ou alors tu pars du principe qu'il va devoir tout refaire ?
+
+
+Jason Valax @jasonvalax
+12:22
+Les recherches ça a été principalement une observation empirique de ce qui se fait autour de nous et un prise en compte des spécificités de notre cas sous contrainte d'estimation de faisabilité technique.
+
+Pour la suite, je pars du principe que tout ce qu'un expert pourra s'exprimer librement sur tout ce qu'il pourrait souhaiter modifier (que l'on y soit attaché ou pas) et qu'on avisera conjointement pour apporter le recul et l'antériorité qui pourraient lui manquer.
+
+Ce qui est certain c'est qu'il ne sera pas enfermé dans une pièce avec pour seule consigne "quand on revient il faut que ce soit nickel". Y aura beaucoup de communication autour de son travail le temps au moins qu'il s'approprie pleinement le contexte.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+12:32
+Ah beh ça déjà ça peut être pas mal de le mettre dans un doc, les exemples qui t'on permis de prendre les décisions, pourquoi tu as pris cet exemple plutôt qu'un autre, les spécifités de notre cas par rapport a ces exemples, etc. Ca ne prend pas beaucoup de temps c'est le coup de quelques lignes dans un google doc et ça va faire gagnerun temps fou à l'avenir quand on voudra revenir sur l'interface ou que l'expert ui/ux devra étudier notre cas.
+
+Quand (si) on a un expert ui/ux qui intervient dans la boite il va essayer de comprendre pourquoi notre interface est comme elle est pour estimer le message qu'on a voulu faire passer, le contexte, les features qu'on a voulu mettre en avant etc. Pour ça il y a deux méthode, la méthode longue: rien n'est près ni mis au propre juste deux trois messages dans un chat et on va devoir faire (encore) des réunions très longue pour lui expliquer pourquoi l'ui ressemble a ce à quoi elle ressemble. Ou la méthode propre, le responsable de l'ui prend des notes petit à petit des décisions qu'il a pris pour l'ui et pourquoi), sans que ça soit non plus 50 lignes, il faut être conçis. Comme ça une fois que l'expert arrive il reprend les notes et a déjà une bonne vue d'ensemble de ce qu'on a et pourquoi.
+
+
+Jason Valax @jasonvalax
+12:36
+Je suis d'accord que ce serait le mieux, et je vais essayer de faire rentrer ça dans ma démarche autant que possible.
+
+En soit il faudrait même le faire pour tout bien au-delà de l'UI-UX et plus généralement pour la nature des fonctionnalités.
+
+Je vais faire de mon mieux. Dans tous les cas c'est le sens de la marche.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+12:53
+Oui il faudra qu'on soit tous capable de fournir de la Doc même minimum
+
+
+Jason Valax @jasonvalax
+13:26
+oui après c'est toujours pareil, Il faut savoir regarder la réalité en face et se dire que parfois même les meilleures intentions peuvent nous desservir.
+
+Sans pour autant le valoriser ou pire le systématiser, il y aura des moments où on aura pas le choix et où il faudra se contenter de la méthode cracra.
+
+On reste une startup.
+
+Néanmoins l'idéal, restera toujours de faire les choses de la manière la plus clean et c'est la direction à suivre. Sur ce point on est d'accord.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+13:47
+Je ne dit pas qu'il faille refaire toute la gestion de projet dela boite, là on se focus sur ui/ux, un truc très conceptuel qui nécessite un minimum d'attention à l'écrit. Dans quels cas faire une doc / notes rapides pour ui/ux peut nous desservir, pourquoi on aurait pas le choix de ne pas la faire. Même en restant une startup ça ne nous empêche pas de prendre des notes mêmes structurées. Eclair moi je ne comprend pas.
+
+
+Jason Valax @jasonvalax
+13:52
+Je ne dis pas qu'il ne faut pas le faire, je préfère juste avertir que même avec toute la bonne volonté du monde il est possible qu'à l'occasion je ne sois pas en mesure de produire quelque chose à la hauteur de ce que tu considèrerais comme le minimum parce que ça me demanderait du temps que je ne peut libérer sans pour autant qu'on puisse se permettre de mettre en pause le développement pour autant.
+
+Mais comme je le dis plus haut j'essaierai et le jour où on aura un expert, il est clair que cela sera la norme de procéder de manière rigoureuse.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+14:03
+Tout à fait, en revenche il faut aussi que tu prennes en compte que la méthode crad la pluspart du temps n'apporte rien de plus et même pire puisse nuire au projet (ou aux collaborateurs) auquel cas il vaut mieux se contenter d'attendre d'avoir le temps de faire quelque chose qui puisse atteindre le minimum. Minimum qui ici est tout a fait atteignable (comme tu nous l'a confirmé plusieurs fois en réunion mais qui n'a manifestement jamais vu le jour), c'est pourquoi je me permet de te relancer dessus. Pour les autres projets et sous projets je ne me le permettrait pas si aucune autre solution n'existait , là, ça n'est pas le cas.
+
+
+Jason Valax @jasonvalax
+14:20
+Ne t'inquiètes pas, j'ai parfaitement conscience des limites de la démarches cracra.
+
+"Il vaut mieux se contenter d'attendre [...]" tout dépend du contexte et je préfère être prudent là dessus plutôt que de prendre à la hate des engagement que je ne suis pas sûr de pouvoir toujours tenir. C'est toute la difficulté de faire coïncider l'idéal et la réalité.
+
+Minimum tout à fait atteignable : En matière de compétence, oui je pense, mais ça dépend aussi du reste de mes tâches sur lequel j'ai déjà du mal à avancer.
+
+Comme je te dis, je ferai au mieux et j'ai bien pris notes de tes préoccupations et recommandations sur cet aspect.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+14:49
+"ça dépend aussi du reste de mes tâches" si tu n'est pas prêt à prendre la responsabilité d'avoir un travail minimum à cause de manque de temps et je dit bien minimum c'est à dire avec un minimum de notes et de suivi et qui permetterait aux collaborateurs de travailler convenablement, alors tu dois laisser cette responsabilité à quelqu'un qui en a le temps, les compétences et qui est justement là pour ça, sinon ça relève presque de l'ingérence. Ca serait dommage de saboter un projet comme celui-là alors que tu as des gens compétents qui sont là pour prendre les choses en main.
+
+
+Jason Valax @jasonvalax
+14:59
+L'impertinence à des limites Hugo.
+
+Si tout ce que tu veux me faire dire c'est "allez j'abandonne, démerdez-vous", tu perds ton temps.
+
+Que je sache jusqu'à maintenant on n'avait pas le minimum dont tu parles alors que je n'étais pas explicitement en charge de ce sujet. Je n'ai pas souvenir que ça ait été un problème pour lequel tu te sois autant manifesté.
+
+Et ça vaut pour d'autres trucs, sur lesquels on a pu également manquer de documentation par le passé sans que je n'ai quoi que ce soit à voir avec ça.
+
+Alors quoi y a quelque chose que je dois prendre à titre personnel ?
+
+On s'est déjà passé de documentation, parce qu'on savait qu'on ne pouvait pas faire autrement ou parce que tout simplement on avait plus urgent à faire. C'est pas bien mais parfois c'est comme ça.
+
+Là, on essais de transiter vers du mieux et progressivement on n'y parviendra.
+Je voudrais bien avoir quelqu'un qui ait le temps, qui soit pleinement compétent sur cet aspect bien précis et qui puisse donc faire tout ce qui te tiens à cœur en termes de méthodologie, avec la rigueur qui s'impose
+
+Mais là, on n'a pas ça sous la main.
+Et on ne peut pas se permettre de tout arrêter jusque là.
+
+Alors c'est chiant, mais c'est aussi ça la vie. On se retrouve souvent à dévier de l'idéal.
+
+C'est pas souhaitable mais tant qu'on en est conscient et qu'on fait au mieux, il faut aussi savoir l'accepter.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+15:09
+Je te laisserai m'expliquer en quoi mes préoccupation sur la façon dont tu gères le projet ui/ux sont impertientes Jason.
+Avant, on avait la charte qui était respecté donc pas besoin de notes en plus. Là on a une toute nouvelle charte arbitraire qui se met en place sans aucun suivi
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+15:16
+En plus de ça, dans cette nouvelle gestion dans laquelle tu as souhaité t'intégrer tu n'est pas seul, tu demande as des collaborateurs d'implémenter des choses et à d'autres de faire des tests.
+
+Encore une fois, je te le répète, pour la nième fois: oui, on a le temps et les compétence et le personnel pour faire ce minimum. Et même sans parler de ceux qui ont les compétences technique pour gérer ce projet, faire un suivi rapide des avancées et décision ui/ux ne nécessite pas un temps monstrueux, il existe des outils pour ça on t'en a déjà parlé, tu nous as dit "ok c'est une bonne idée", résultat: jamais mis en place.
+
+Conclusion, encore une fois, oui on a le temps, oui on a le personnel, et même dans notre contexte de besoin de rapidité et oui on avait une meilleur gestion avant que tu intervienne sur cette partie.
+
+
+Jason Valax @jasonvalax
+15:17
+Je ne dis pas que tes préoccupation sont impertinentes, je les partage, c'est l'attitude qui est impertinente.
+
+Tu regardes la situation d'une seule perspective et tu oublis qu'une part de la réalité échappe à ton champ de vision.
+
+Tu défends un idéal et c'est très bien, mais tu semble oublier que les choses sont plus complexes et qu'il ne suffit pas de défendre une vérité pour qu'elle soit directement applicable, au point de tomber dans une présentation péremptoire des choses.
+
+En gros tu tombes dans ce que tu me reprochais il y a juste deux semaine lors des réunions.
+
+Ne te méprends pas, je ne dis pas être exempt de reproche surtout sur cet aspect mais l'acharnement dont tu fais preuve me laisse penser que ta démarche et biaisée.
+Ecoute, si tu as des choses à me dire on règle ça en visio.
+
+Là ça devient ridicule.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+15:44
+Jason, il faudra donc que tu m'expliques dans quelle réalité qui m'échapperait, la prise de notes et le suivi des avancements ui/ux tombent. Je n'attend qu'une chose c'est de comprendre pourquoi tu n'appliques pas cette méthode simple qui permetterai à tout les collaborateurs de travailler convenablement. Pour le moment tout ce que je reçoit c'est "non mais tu ne peux pas comprendre c'est une réalité qui t'échappe" donc n'hésite pas à m'expliquer ce qui m'échappe dans l'application de cette gestion rudimentaire mais beaucoup plus productive ou du report de gestion vers un collaborateur qui aurait le temps de l'appliquer (ce qui est déjà le cas).
+
+La gestion ui/ux ça se magne avec prudence sans quoi on tombe très vite dans des dérives clichés dans lequelles, je suis désolé de te le dire Jason, tu es tombé, raison pour laquelle j'essaye en vain de te remettre sur les railles pour que le projet avance au mieux.
+
+Le chat suffit amplement pour exprimer ce que j'ai à te dire. Si tu veux en discuter de vive voix on en discutera lundi avec toute l'équipe.
+
+Je te confirme que c'est assez ridicule de ne pas écouter quand on (les pôles de compétence) te proposent une méthode fonctionnelle réfléchie justement pour notre contexte actuel compliqué en tournant autour du pot à coup de "c'est une réalité qui vous échappe" sans vraiement justifier ni nous donner les cles de cette réalité pour qu'on ré-adapte la méthode proposée. Le tout provoquant une incompréhension globale qu'on met sous le tapi jusqu'à la prochaine décision de la DG sans justification et se terminant trop souvent par "je suis majoritaire la décision finale me revient". Les pôles doivent constamment faire l'effort de convaincre la DG mais la DG elle se permet de prendre des décisions arbitraires sans prendre en compte ce que les personnes compétentes proposent sans justification à coup de tentative de persuasion que la DG a raison (il y a une différence avec la tentative de convaincre).
+A ce rythme là, plus personne ne voudra donner son avis.
+
+
+Jason Valax @jasonvalax
+16:35
+Bon c'est mon dernier message sur ce sujet :
+
+Je n'ai pas dis qu'il soit dispensable de passer par une méthode rigoureuse et je favorise d'y avoir recours.
+
+Mais je prévenais simplement que parfois il serait possible qu'on ne puisse pas y recourir par la force des choses tout en tâchant de se donner les moyens de faire en sorte que ce soit aussi exceptionnel que possible.
+
+C'est tout. Si c'est quelque chose qui t'offusque j'en suis navré. J'essaierai de faire de mon mieux, jusqu'à ce qu'on puisse faire mieux.
+
+
+Pour le reste, oui, je sais que ça te ou vous fait mal mais ques que soit l'avis des experts sur quelque domaine que ce soit, il peut aussi arriver qu'en tant que directeur général, je ne sois pas d'accord sur une point ou une autre. Et oui en tant que directeur général, s'il y a des choses qui ne me convainquent pas, je prends la responsabilité de l'exprimer et de demander à ce qu'il soit fait différemment.
+
+Et ne crois pas que je le fais à la légère. Ça m'emmerde au plus haut point justement parce que je sais ce qu'il en coûte. Et sur bien des aspects, je préfèrerais que tout colle dès le début et pour tout le monde. Il est néanmoins arrivé à différentes reprises qu'on ait à gagner à remettre en question certaines propositions pour aboutir à quelque chose qui s'est finalement avéré mieux de l'avis de tous. Ce qui n'enlève rien à la compétence des uns ou des autres parce que tout ne tourne pas qu'autour de la compétence.
+
+
+Je comprends que tu ou vous puissiez avoir l'impression que mon "ingérence" est monnaie courante voire que le régime est tyrannique mais là aussi c'est une question de point de vue à relativiser.
+
+Je pense que tu aurais tôt fait de t'apercevoir que la liberté dont chacun dispose au sein d'AIbstract est supérieure à ce que tu pourrais trouver dans la majorité des autres boites.
+
+Si ta vision des choses c'est "Je veux faire tout ce que je veux comme il me plait sans avoir de compte à rendre à qui que ce soit et sans qu'on ne puisse jamais me dire non.", je pense que tu comprendra qu'il n'y a qu'une seule entreprise au monde dans laquelle ça te seras éventuellement possible, la tienne. Ne comprends cela de travers, je ne dis pas que c'est pour avoir cette liberté que je l'ai fait moi-même mais le fait est que moi-même, je ne me suis pas pleinement épanoui dans ma condition de salarié donc je peux imaginer que ce soit aussi le cas d'autres personnes et je ne leur en voudrais jamais pour cela.
+
+Je pense d'ailleurs que dans cette situation, si ta boite compte une équipe, tu ferais très vite l'expérience du fait que tu puisses être en désaccord avec des propositions bien qu'elles soient bien justifiées et bien présentées par des personnes compétentes.
+
+
+Alors, ce n'est pas parfait et je ne souhaite pas me comparer au pire pour dire qu'ici c'est le paradis. Mais je pense qu'il faut savoir redescendre sur terre et se rappeler que Rome ne s'est pas construite en un jour.
+
+Bien sûr que ce soit sur l'UI/UX ou des tas d'autres sujets tu pourras t'en donner à cœur joie pour pointer tout ce que je peux faire de travers. Je suis prêt à discuter de tout mais je pense qu'on a tous les deux à gagner à le faire de manière plus bienveillante et pédagogique.
+
+
+Je n'ai jamais cherché à contraindre le fait que les uns et les autres donnent leur avis et je favorise la recherche du consensus en toute situation mais en admettant les conséquences que ça puisse avoir je n'ai aucune obligation morale à être d'accord avec qui que ce soit, de la même façon que personne n'as d'obligation morale à être d'accord avec moi.
+
+Il demeure qu'on est dans une entreprise avec des règles et des fonctionnements auxquels chacun est libre de choisir d'adhérer ou non.
+
+Il y a une direction générale, il y a des personnes compétentes, il y a des droits et des devoirs, chacun a des choses à faire valoir, parfois tout le monde est d'accord, parfois personne ne l'est.
+
+Si tu veux avoir de l'influence sur tout ça pour le faire évoluer vers quelque chose qui te siérait mieux, c'est parfait, c'est aussi mon but, par contre en l'état j'ai plus l'impression que tu es sur le terrain du ressentiment que sur celui de la bienveillance, de la pédagogie et du recul.
+
+Et si moi aussi j'ai pu faillir sur ce point, de mon point de vue il semble que je ne sois définitivement plus le seul.
+
+
+A toi de me dire si tu es d'accord avec le fait que le temps que nous avons passé tout deux à écrire et se lire sur ce sujet aurait pu être employé de manière plus efficace même en parlant du même sujet mais sur un ton moins vindicatif.
+
+hugocastaneda
+Г'юго "Doudou" @hugocastaneda
+17:21
+J'aurai aimé que tu expliques comme on te l'a mainte fois demandé pourquoi tu veux aller a l'encontre de ce qu'on te propose alors que tout les marqueurs sont au vert (c'est ça que j'attendais pour qu'on évite effectivement de s'étaller). Mais tu tournes à chaque fois autour du problème sans répondre à la question avec des arguments techniques, c'est dommage. Evidemment, je ou qui que ce soit ne veut pas faire ce qu'il veut uniquement, simplement que quand tu as un idée en tête tu sois capable de la remettre en question quand plusieurs personnes t'expliquent argument à l'appui que tu as tort ou au moins que tu apportes une contre réponse convaincante et à chaque fois, tu évites de répondre, la aussi, c'est dommage. Evite de comparer la boite à d'autre boites, tu sais bien qu'on ne justifie pas un mauvais comportement parce qu'il existe pire ailleurs. J'aurai aimé t'amener à être moins têtu et à réellement considérer l'avis des pôles compétents alors que tu as déjà une idée en tête mais je sais maintenant que ça ne sera jamais le cas. Ton explication est suffisament claire "je favorise la recherche du consensus" mais "aucune obligation morale à être d'accord avec qui que ce soit" le fait d'être d'accord ou pas n'a rien de morale Jason, ça doit être basé sur une argumentation solide qui permettre de s'orienter sur le meilleurs chemin pour la boite et expliqué pour que tout le monde puisse te suivre.
+A partir de maintenant j'arrêterai de répondre ou de débatre avec toi. C'est un choix difficile à faire pour moi mais il y a trop de risque que tu viennes avec un idée préconçue en tête et pour but de l'imposer et non de convaincre ou de faire évoluer cette idée comme on le souhaiterait dans un millieu productif. C'est effectivement, et je te rejoint sur ce point, une perte de temps que je ne peux plus me permettre (tu le comprendra). Je me trompe peut être Jason mais je crois que tu ne te rends pas compte de tes motivations intrinsèques quand tu viens "débatre" avec nous.
+
+C'est dommage d'en arriver là.

@@ -8,6 +8,7 @@
             :class="standalone ? 'mb-5' : ''"
         >
             <v-card-title>
+                <!-- --------------------------------------------- HEADER -->
                 <v-row>
                     <v-col>
                         {{project.name}}
@@ -19,17 +20,11 @@
                             Pending
                         </span>
                     </v-col>
+                    <!-- ---------------------- fast actions -->
                     <v-col
                         cols="1"
                         style="display:flex"
                     >
-                        <v-btn
-                            v-if="!standalone"
-                            icon
-                            :to="'/project/'+project.id"
-                        >
-                            <v-icon>mdi-open-in-new</v-icon>
-                        </v-btn>
                         <v-btn
                             icon
                             @click="edit"
@@ -37,7 +32,17 @@
                             <v-icon>mdi-pencil</v-icon>
                         </v-btn>
                         <v-spacer></v-spacer>
+
+                        <v-btn
+                            v-if="!standalone"
+                            class='ml-5'
+                            icon
+                            :to="'/project/'+project.id"
+                        >
+                            <v-icon>mdi-open-in-new</v-icon>
+                        </v-btn>
                     </v-col>
+                    <!-- ---------------------- ACTIONS -->
                     <v-col>
                         <v-btn
                             class='ml-3'
@@ -45,17 +50,22 @@
                             @click.stop="add_new('move',
                                     {project:project.id,client:project.client,type:'in',taxed:true}
                                 )"
-                        >Client Unload<v-icon right>mdi-plus</v-icon>
+                        >Unload<v-icon right>mdi-plus</v-icon>
+                        </v-btn>
+                        <v-btn
+                            class='ml-3'
+                            color="primary"
+                            @click.stop="add_new('task',{project:project.id})"
+                        >Task<v-icon right>mdi-plus</v-icon>
                         </v-btn>
                         <v-btn
                             color="primary"
                             class='ml-3'
-                            @click.stop="add_new('move',
-                                    {project:project.id,type:'out'}
-                                )"
+                            @click.stop="add_asset()"
                         >Assets<v-icon right>mdi-plus</v-icon>
                         </v-btn>
                     </v-col>
+                    <!-- ---------------------- Budget Overview -->
                     <v-col style="display:flex">
                         <v-spacer></v-spacer>
                         <span style="font-size:13px; opacity:0.5">
@@ -77,19 +87,19 @@
         <v-expansion-panel-content :is="standalone ? 'div' : 'v-expansion-panel-content'">
             <v-card-text>
                 {{project.id}}
+                <!-- --------------------------------------------- ASSETS & REFS -->
                 <v-row>
                     <v-col
                         cols="12"
                         sm="3"
                     >
                         <list-displayer
-                            title="estimates"
-                            :items="estimates"
+                            title="assets"
+                            :actionable="true"
+                            :items="assets"
                             :show_multis="false"
                             :dense="true"
-                            :add_btn="true"
-                            table_name="estimate"
-                            @add="add_new('estimate',{project:project.id,client:project.client,amount:account_data.ideal_load_taxed})"
+                            table_name="asset"
                         ></list-displayer>
                         <list-displayer
                             title="invoices"
@@ -102,6 +112,15 @@
                             @add="add_new('invoice',{project:project.id,client:project.client,amount:account_data.ideal_load_taxed})"
                         ></list-displayer>
                         <list-displayer
+                            title="estimates"
+                            :items="estimates"
+                            :show_multis="false"
+                            :dense="true"
+                            :add_btn="true"
+                            table_name="estimate"
+                            @add="add_new('estimate',{project:project.id,client:project.client,amount:account_data.ideal_load_taxed})"
+                        ></list-displayer>
+                        <list-displayer
                             title="associates"
                             :actionable="false"
                             :items="associates"
@@ -110,97 +129,112 @@
                             table_name="associate"
                         ></list-displayer>
                     </v-col>
-                    <v-col
-                        cols="12"
-                        sm="5"
-                    >
-                        <v-card dark>
 
-                            <bud-detail
-                                name="Project Balance"
-                                :icon="account_data.balance_post_taxe == 0 ? 'check' : 
-                                account_data.balance_post_taxe > 0 ? 'party-popper' : 
-                                account_data.balance_post_taxe < 0 ? 'alert-circle' : null"
-                                :amount="account_data.balance_post_taxe"
-                            ></bud-detail>
-
-                            <v-divider></v-divider>
-
-                            <v-list
-                                width="100%"
-                                dense
-                                v-for="(disper, name) in dispers"
-                                :key="name"
-                            >
-
-                                <v-list-item
-                                    :key="'sub-'+name"
-                                    style="opacity:0.3;font-weight:light"
-                                >{{name}}</v-list-item>
-                                <template v-for="(disp_data,index) in disper">
-                                    <v-divider
-                                        :key="index"
-                                        v-if="disp_data == '----'"
-                                        width='30%'
-                                        style='margin:auto;margin-left:10px'
-                                    ></v-divider>
-                                    <v-divider
-                                        :key="index+'-2'"
-                                        v-if="disp_data == '----'"
-                                        width='30%'
-                                        style='margin:auto;margin-right:10px'
-                                    ></v-divider>
-                                    <v-divider
-                                        :key="index+'3'"
-                                        v-else-if="disp_data == '--------'"
-                                        width='95%'
-                                        style='margin:auto;margin-right:10px'
-                                        class='mb-1 mt-4'
-                                    ></v-divider>
-                                    <bud-detail
-                                        v-else
-                                        :key="index"
-                                        :is_detail="true"
-                                        :name="disp_data.name"
-                                        :type="disp_data.type"
-                                        :color="disp_data.color"
-                                        :inverse_sign="disp_data.inverse_sign"
-                                        :no_sign="disp_data.no_sign"
-                                        :icon="disp_data.icon"
-                                        :mul="disp_data.mul"
-                                        :no_amount="disp_data.no_amount"
-                                        :amount="disp_data.no_amount ? 
-                                            disp_data.value : $utils.money.amount_round(disp_data.value * (disp_data.mul ? disp_data.mul : 1))"
-                                    ></bud-detail>
-                                </template>
-                                <v-divider
-                                    width='95%'
-                                    style='margin:auto;margin-right:10px'
-                                ></v-divider>
-                            </v-list>
-
-                        </v-card>
-                    </v-col>
+                    <!-- --------------------------------------------- TASKS -->
                     <v-col
                         cols="12"
                         sm="4"
+                        v-if="tasks.length"
                     >
-                        <v-card-text>
-                            project moves
-                            <v-btn
-                                icon
-                                @click="add_new('move',{project:project.id})"
-                            >
-                                <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                        </v-card-text>
-                        <move-disp
-                            v-for="move in moves"
-                            :key="move.id"
-                            :move="move"
-                            :date="true"
-                            :show_details="false"
-                        ></move-disp>
+                        <v-card-title>Tasks</v-card-title>
+                        <task-disp
+                            v-for="task in tasks"
+                            :key="task.id"
+                            :task="task"
+                            :dense="false"
+                        ></task-disp>
+                    </v-col>
+
+                    <!-- --------------------------------------------- BUDGET -->
+                    <v-col>
+                        <v-row>
+                            <v-col>
+                                <v-card dark>
+
+                                    <bud-detail
+                                        name="Project Balance"
+                                        :icon="account_data.balance_post_taxe == 0 ? 'check' : 
+                                account_data.balance_post_taxe > 0 ? 'party-popper' : 
+                                account_data.balance_post_taxe < 0 ? 'alert-circle' : null"
+                                        :amount="account_data.balance_post_taxe"
+                                    ></bud-detail>
+
+                                    <v-divider></v-divider>
+
+                                    <v-list
+                                        width="100%"
+                                        dense
+                                        v-for="(disper, name) in dispers"
+                                        :key="name"
+                                    >
+
+                                        <v-list-item
+                                            :key="'sub-'+name"
+                                            style="opacity:0.3;font-weight:light"
+                                        >{{name}}</v-list-item>
+                                        <template v-for="(disp_data,index) in disper">
+                                            <v-divider
+                                                :key="index"
+                                                v-if="disp_data == '----'"
+                                                width='30%'
+                                                style='margin:auto;margin-left:10px'
+                                            ></v-divider>
+                                            <v-divider
+                                                :key="index+'-2'"
+                                                v-if="disp_data == '----'"
+                                                width='30%'
+                                                style='margin:auto;margin-right:10px'
+                                            ></v-divider>
+                                            <v-divider
+                                                :key="index+'3'"
+                                                v-else-if="disp_data == '--------'"
+                                                width='95%'
+                                                style='margin:auto;margin-right:10px'
+                                                class='mb-1 mt-4'
+                                            ></v-divider>
+                                            <bud-detail
+                                                v-else
+                                                :key="index"
+                                                :is_detail="true"
+                                                :name="disp_data.name"
+                                                :type="disp_data.type"
+                                                :color="disp_data.color"
+                                                :inverse_sign="disp_data.inverse_sign"
+                                                :no_sign="disp_data.no_sign"
+                                                :icon="disp_data.icon"
+                                                :mul="disp_data.mul"
+                                                :no_amount="disp_data.no_amount"
+                                                :amount="disp_data.no_amount ? 
+                                            disp_data.value : $utils.money.amount_round(disp_data.value * (disp_data.mul ? disp_data.mul : 1))"
+                                            ></bud-detail>
+                                        </template>
+                                        <v-divider
+                                            width='95%'
+                                            style='margin:auto;margin-right:10px'
+                                        ></v-divider>
+                                    </v-list>
+
+                                </v-card>
+                            </v-col>
+                            <v-col :cols="tasks.length ? 12 : 5">
+                                <v-card-text>
+                                    project moves
+                                    <v-btn
+                                        icon
+                                        @click="add_new('move',{project:project.id})"
+                                    >
+                                        <v-icon>mdi-plus</v-icon>
+                                    </v-btn>
+                                </v-card-text>
+                                <move-disp
+                                    v-for="move in moves"
+                                    :key="move.id"
+                                    :move="move"
+                                    :date="true"
+                                    :show_details="false"
+                                ></move-disp>
+                            </v-col>
+                        </v-row>
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -214,17 +248,27 @@
 import ListDisplayer from '@/db_vues/list-displayer.vue'
 import BudDetail from './bud-detail.vue'
 import MoveDisp from './move-disp.vue'
+import TaskDisp from './task-disp.vue'
 import RandomAdder from '@/db_vues/random-adder.vue'
 import EntryUpdater from '@/db_vues/entry-updater.vue'
 export default {
     props: ['project', 'standalone'],
-    components: { MoveDisp, BudDetail, ListDisplayer, RandomAdder, EntryUpdater },
+    components: { MoveDisp, BudDetail, ListDisplayer, RandomAdder, EntryUpdater, TaskDisp },
     computed: {
         ref_me() {
             return this.$db.items_referencing_me(this.project, 'project')
         },
         estimates() {
             return Object.values(this.ref_me.estimate)
+        },
+        assets() {
+            return Object.values(this.ref_me.asset)
+        },
+        base_tasks() {
+            return [...Object.values(this.ref_me.task), ...this.$utils.tasks.assets_to_tasks(this.assets)]
+        },
+        tasks() {
+            return this.$utils.tasks.sort(this.base_tasks)
         },
         all_taxes() {
             return Object.values(this.$db.table_items('taxe'))
@@ -397,56 +441,6 @@ export default {
                 }
             }
 
-            // const client_invoice_balance = invoice_load - client_invoice_unload
-            // const client_invoice_unload_taxe = -invoice_load * this.taxe_rate
-            // const invoice_post_taxe = client_invoice_unload + client_invoice_unload_taxe
-
-            // // ---- Hours and Labor
-            // const hour_cost = this.project.labor_hour_cost
-            // const hours_spent_prevision = this.project.hours_spent_prevision
-            // const hours_spent_real = this.project.hours_spent_real
-            // const hours_spent_span = hours_spent_prevision - hours_spent_real
-            // const labor_ideal_load = (hours_spent_real ? hours_spent_real : hours_spent_prevision) * hour_cost
-
-            // // ---- Assets
-            // const assets_load_prevision = this.project.assets_cost_prevision
-            // const real_assets_load = this.$utils.money.moves_final(this.base_moves.filter(m => m.type == 'out'))
-            // const assets_load_span = assets_load_prevision - real_assets_load
-            // const final_assets_load = real_assets_load ? real_assets_load : assets_load_prevision
-
-            // // ---- total load
-            // const total_load = final_assets_load + labor_ideal_load
-
-            // // ---- Ressources
-            // const labor_ressource = this.compute_ressource(labor_ideal_load, total_load, invoice_load, client_invoice_unload)
-            // const assets_ressource = this.compute_ressource(final_assets_load, total_load, invoice_load, client_invoice_unload)
-
-            // // ---- true total load(assets)
-            // const total_ressource = this.compute_ressource(total_load, total_load, invoice_load, client_invoice_unload)
-
-            // const final_balance = total_ressource.load_balance
-
-            // return {
-            //     final_balance: this.$utils.money.amount_round(final_balance),
-            //     dispers: {
-            //         'Effective Load': [
-            //             ...this.create_ressource_disper('Total', total_ressource),
-            //         ],
-            //         'Assets': [
-            //             ...this.create_ressource_disper('Assets', assets_ressource),
-            //             { name: 'Assets Load Span', value: assets_load_span, type: ' €' },
-            //             { name: 'Assets Load Real', value: real_assets_load, type: ' €' },
-            //             { name: 'Assets Load Prevision', value: assets_load_prevision, type: ' €' },
-            //         ],
-            //         'Labor': [
-            //             ...this.create_ressource_disper('Labor', labor_ressource),
-            //             { name: 'Hours Span', value: hours_spent_span, type: ' h' },
-            //             { name: 'Hours Real', value: hours_spent_real, type: ' h', mul: -1, no_sign: true },
-            //             { name: 'Hours Prevision', value: hours_spent_prevision, type: ' h', mul: -1, no_sign: true },
-            //         ],
-            //     }
-            // }
-
 
         },
         dispers() {
@@ -525,7 +519,15 @@ export default {
         },
         edit() {
             this.$refs.entry_updater.edit('project', this.project.id)
-        }
+        },
+        async add_asset() {
+            const move = await this.$refs.random_adder.add('move', { project: this.project.id, type: 'out' })
+            await this.$refs.random_adder.add('asset', {
+                project: this.project.id, label: move.label, move: move.id,
+                order_date: move.date, description: move.description,
+                supplier: move.supplier
+            })
+        },
     }
 }
 </script>

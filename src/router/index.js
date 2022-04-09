@@ -20,14 +20,15 @@ add_route('home', '/')
 add_route('connector')
 add_route('estimater')
 add_route('projects')
-add_route('project', '/project/:project_id')
 add_route('budget')
+add_route('project', '/project/:project_id')
 
 // add_route('clients')
 // add_route('moves')
 // add_route('moves')
 
 add_route('table-edit', '/table/:table_name')
+add_route('item-edit', '/table/:table_name/:item_id')
 
 
 const router = new VueRouter({

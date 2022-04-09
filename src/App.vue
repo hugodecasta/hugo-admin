@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <v-main v-if="(common.user || connected === false) && db_ready">
+        <v-main v-if="(common.user && db_ready) || connected === false">
             <router-view />
         </v-main>
         <v-progress-linear
@@ -30,7 +30,9 @@ export default {
     async mounted() {
         const connected = await this.$keydb_api.auth.connected()
         this.connected = connected
-        if (!connected) return this.$router.push('/connector')
+        if (!connected) {
+            return this.$router.push('/connector')
+        }
         const token = await this.$keydb_api.auth.get_token()
         await this.$keydb_api.auth.reconnect(token)
         const user = await this.$keydb_api.auth.user.get()
@@ -47,6 +49,8 @@ export default {
                 move: '${label} - ${amount}€',
                 estimate: '${number}',
                 invoice: '${number}',
+                asset: '${label}',
+                task: '${label}',
             },
             data: {
                 client: {
@@ -54,7 +58,7 @@ export default {
                     street: { type: 'string' },
                     zip: { type: 'number' },
                     city: { type: 'string' },
-                    telephone: { type: 'string' },
+                    telephone: { type: 'phone' },
                     email: { type: 'string' },
                     siren: { type: 'string' },
                 },
@@ -63,7 +67,7 @@ export default {
                     street: { type: 'string' },
                     zip: { type: 'number' },
                     city: { type: 'string' },
-                    telephone: { type: 'string' },
+                    telephone: { type: 'phone' },
                     email: { type: 'string' },
                     siren: { type: 'string' },
                 },
@@ -72,7 +76,7 @@ export default {
                     street: { type: 'string' },
                     zip: { type: 'number' },
                     city: { type: 'string' },
-                    telephone: { type: 'string' },
+                    telephone: { type: 'phone' },
                     email: { type: 'string' },
                     siren: { type: 'string' },
                 },
@@ -137,11 +141,33 @@ export default {
 
                     taxes_paied: { array_of: 'taxe', if: 'is_paid_taxe=true && type="out"' },
 
-                    client: { ref: 'client', nullable: true, delete: false, if: 'type="in"' },
                     supplier: { ref: 'supplier', nullable: true, delete: false, if: 'type="out"' },
+
                     project: { ref: 'project', nullable: true, delete: false },
+                    client: { ref: 'client', nullable: true, delete: false, if: 'type="in"' },
 
                     amount: { type: 'number' },
+                },
+                task: {
+                    label: { type: 'string' },
+                    description: { type: 'long-string' },
+                    project: { ref: 'project' },
+                    deadline: { type: 'date' },
+                    started: { type: 'boolean' },
+                    start_date: { type: 'date', if: 'started=true && done=false' },
+                    done: { type: 'boolean' },
+                    end_date: { type: 'date', if: 'started=false && done=true' },
+                    archived: { type: 'boolean', if: 'end_date!null' },
+                },
+                asset: {
+                    label: { type: 'string' },
+                    order_date: { type: 'date' },
+                    delivered: { type: 'boolean' },
+                    estimated_deliver_date: { type: 'date', if: 'delivered=false' },
+                    description: { type: 'long-string' },
+                    project: { ref: 'project' },
+                    supplier: { ref: 'supplier' },
+                    move: { ref: 'move' },
                 },
             }
         }
