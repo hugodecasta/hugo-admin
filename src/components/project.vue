@@ -1,7 +1,46 @@
 <template>
+    <v-btn
+        v-if="btn"
+        color="primary"
+        class='pa-10 pl-2 pr-2 pt-8 ma-2'
+        :to="'/project/'+project.id"
+    >
+        <v-card-title style="position:relative">
+            <v-icon
+                v-if="project_progression==100"
+                :color="$utils.money.amount_color(account_data.balance_post_taxe)"
+                class='mr-2'
+            >mdi-check-bold</v-icon>
+            <v-icon
+                v-if="project.is_rd"
+                class='mr-2'
+            >mdi-test-tube</v-icon>
+            <v-row>
+                <v-col>
+                    {{project.name}}
+                </v-col>
+                <v-col
+                    v-if="!project.is_rd"
+                    :class="$utils.money.amount_class(account_data.balance_post_taxe)"
+                >
+                    {{$utils.money.amount_display(account_data.balance_post_taxe)}}
+                </v-col>
+            </v-row>
+
+            <v-progress-linear
+                v-if="!project.is_rd && project_progression != 100"
+                class='mt-2'
+                bottom
+                :color="$utils.money.amount_color(account_data.balance_post_taxe)"
+                :value="project_progression"
+            ></v-progress-linear>
+
+        </v-card-title>
+    </v-btn>
     <v-expansion-panel
         :is="standalone ? 'v-card' : 'v-expansion-panel'"
         :class="standalone ? 'pa-5' : ''"
+        v-else
     >
         <v-expansion-panel-header
             :is="standalone ? 'div' : 'v-expansion-panel-header'"
@@ -11,6 +50,18 @@
                 <!-- --------------------------------------------- HEADER -->
                 <v-row>
                     <v-col>
+                        <template v-if="project.is_rd">
+                            <span
+                                style="opacity:0.3"
+                                class='mr-5'
+                            >
+                                <v-icon
+                                    class='mr-2'
+                                    color="primary"
+                                >mdi-test-tube</v-icon>
+                                R&D
+                            </span>
+                        </template>
                         {{project.name}}
                         <span
                             v-if="project.pending"
@@ -18,6 +69,13 @@
                             style="opacity:0.5"
                         >
                             Pending
+                        </span>
+                        <span
+                            v-if="project_progression==100"
+                            class='ml-10'
+                            style="opacity:0.3"
+                        >
+                            DONE
                         </span>
                     </v-col>
                     <!-- ---------------------- fast actions -->
@@ -45,6 +103,7 @@
                     <!-- ---------------------- ACTIONS -->
                     <v-col>
                         <v-btn
+                            v-if="!project.is_rd"
                             class='ml-3'
                             color="primary"
                             @click.stop="add_new('move',
@@ -102,6 +161,7 @@
                             table_name="asset"
                         ></list-displayer>
                         <list-displayer
+                            v-if="!project.is_rd"
                             title="invoices"
                             :actionable="false"
                             :items="invoices"
@@ -112,6 +172,7 @@
                             @add="add_new('invoice',{project:project.id,client:project.client,amount:account_data.ideal_load_taxed})"
                         ></list-displayer>
                         <list-displayer
+                            v-if="!project.is_rd"
                             title="estimates"
                             :items="estimates"
                             :show_multis="false"
@@ -148,7 +209,7 @@
                     <!-- --------------------------------------------- BUDGET -->
                     <v-col>
                         <v-row>
-                            <v-col>
+                            <v-col v-if="!project.is_rd">
                                 <v-card dark>
 
                                     <bud-detail
@@ -252,7 +313,7 @@ import TaskDisp from './task-disp.vue'
 import RandomAdder from '@/db_vues/random-adder.vue'
 import EntryUpdater from '@/db_vues/entry-updater.vue'
 export default {
-    props: ['project', 'standalone'],
+    props: ['project', 'standalone', 'btn'],
     components: { MoveDisp, BudDetail, ListDisplayer, RandomAdder, EntryUpdater, TaskDisp },
     computed: {
         ref_me() {
@@ -361,6 +422,8 @@ export default {
             const theoric_balance = labor_balance + assets_balance
             const theoric_balance_post_taxe = theoric_balance - applyed_taxed
 
+            const real_labor_hour_cost = labor_unload / real_hours_spent
+
             return {
                 ideal_load_taxed,
                 needed_load_balance,
@@ -387,6 +450,13 @@ export default {
                         '----',
                         { name: 'Assets Unload', value: assets_unload },
                         { name: 'Labor Unload', value: labor_unload },
+                    ],
+                    'Real Time Cost': [
+                        {
+                            name: 'Real Hours Cost', value: real_labor_hour_cost, type: ' €/h',
+                            mul: real_labor_hour_cost < ideal_labor_hour_cost ? -1 : 1, no_sign: true
+                        },
+                        { name: 'Ideal Hours Cost', value: ideal_labor_hour_cost, type: ' €/h', no_sign: true },
                     ],
                     'Real Load Spans': [
                         {
@@ -442,6 +512,15 @@ export default {
             }
 
 
+        },
+        project_progression() {
+            if (new Date(this.project.ending_date).getTime() <= this.$utils.time.now) return 100
+            const start = new Date(this.project.starting_date).getTime()
+            const deadline = this.$utils.tasks.sort(this.tasks.filter(t => t.deadline))[0]?.deadline
+            if (!deadline) return null
+            const diff = new Date(deadline).getTime() - start
+            const now = this.$utils.time.now - start
+            return (now / diff) * 100
         },
         dispers() {
             return Object.fromEntries(Object.entries(this.account_data.dispers).filter(([, disper]) => this.can_disp(disper)))
@@ -525,7 +604,6 @@ export default {
             await this.$refs.random_adder.add('asset', {
                 project: this.project.id, label: move.label, move: move.id,
                 order_date: move.date, description: move.description,
-                supplier: move.supplier
             })
         },
     }

@@ -78,6 +78,12 @@ const global_database_carrier = new Vue({
             const name = namer.replace(/\$\{(.*?)\}/g, (m, g) => item[g])
             return name
         },
+        table_item_url(table_name, item_id) {
+            const item = this.table_item(table_name, item_id)
+            const url_pattern = this.config.urls[table_name]
+            if (!url_pattern) return null
+            return url_pattern.replace(/\$\{(.*?)\}/g, (m, g) => item[g])
+        },
         item_name_id(table_name, id) {
             return this.item_name(table_name, this.table_item(table_name, id))
         },

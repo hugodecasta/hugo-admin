@@ -16,7 +16,7 @@ export default {
                                 if (task.done) return 0
                                 if (!task.deadline) return task.started ? 2 : 1
                                 const diff = Date.now() - new Date(task.deadline).getTime()
-                                return 10000 + (diff / 1000000)
+                                return 10000 + (diff / 1000000) + (task.started ? 0.5 : 0)
                             }
                             return tasks.filter(t => !t.archived).sort((t1, t2) => {
                                 return task_score(t2) - task_score(t1)

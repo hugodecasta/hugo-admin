@@ -40,6 +40,9 @@ export default {
 
         const data_base_config = {
             name: 'hugo_admin',
+            urls: {
+                project: '/project/${id}'
+            },
             namers: {
                 client: '${name}',
                 associate: '${name}',
@@ -83,15 +86,16 @@ export default {
                 project: {
                     name: { type: 'string' },
                     description: { type: 'long-string' },
-                    client: { ref: 'client', nullable: true, delete: false },
+                    is_rd: { type: 'boolean' },
+                    client: { ref: 'client', nullable: true, delete: false, if: 'is_rd=false' },
                     pending: { type: 'boolean', def: true },
                     starting_date: { type: 'date', if: 'pending=false' },
                     associates: { array_of: 'associate' },
                     links: { type: 'array' },
-                    labor_hour_cost: { type: 'number', def: 70 },
-                    hours_spent_prevision: { type: 'number', def: 0 },
-                    hours_spent_real: { type: 'number', def: 0 },
-                    assets_cost_prevision: { type: 'number', def: 0 },
+                    labor_hour_cost: { type: 'number', def: 70, if: 'is_rd=false' },
+                    hours_spent_prevision: { type: 'number', def: 0, if: 'is_rd=false' },
+                    hours_spent_real: { type: 'number', def: 0, if: 'is_rd=false' },
+                    assets_cost_prevision: { type: 'number', def: 0, if: 'is_rd=false' },
                     ending_date: { type: 'date', if: 'pending=false && starting_date!null' },
                 },
                 estimate: {
@@ -152,9 +156,9 @@ export default {
                     label: { type: 'string' },
                     description: { type: 'long-string' },
                     project: { ref: 'project' },
-                    deadline: { type: 'date' },
                     started: { type: 'boolean' },
                     start_date: { type: 'date', if: 'started=true && done=false' },
+                    deadline: { type: 'date' },
                     done: { type: 'boolean' },
                     end_date: { type: 'date', if: 'started=false && done=true' },
                     archived: { type: 'boolean', if: 'end_date!null' },
@@ -166,7 +170,6 @@ export default {
                     estimated_deliver_date: { type: 'date', if: 'delivered=false' },
                     description: { type: 'long-string' },
                     project: { ref: 'project' },
-                    supplier: { ref: 'supplier' },
                     move: { ref: 'move' },
                 },
             }

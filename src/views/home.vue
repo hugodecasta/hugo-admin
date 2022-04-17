@@ -20,8 +20,21 @@
             class='ma-3'
         >{{table}}s</v-btn>
         <v-divider></v-divider>
+
         <v-card-title>Dashboard</v-card-title>
-        <v-divider></v-divider>
+        <v-card
+            style="display:flex"
+            elevation="0"
+            class='pa-3'
+        >
+            <project
+                v-for="project in Object.values($db.table_items('project'))
+                    .filter(p=>!p.ending_date || new Date(p.ending_date) > $utils.time.now)"
+                :key="project.id"
+                :btn="true"
+                :project="project"
+            ></project>
+        </v-card>
         <v-row class='pa-5'>
             <v-col>
                 <all-tasks></all-tasks>
@@ -35,12 +48,13 @@
 
 <script>
 import allTasks from '@/components/all-tasks.vue'
+import Project from '@/components/project.vue'
 import { mapState } from 'vuex'
 import Budget from './budget.vue'
 export default {
-    components: { allTasks, Budget },
+    components: { allTasks, Budget, Project },
     data: () => ({
-        forbidden_routes: ['table-edit', 'project']
+        forbidden_routes: ['table-edit', 'project', 'item-edit']
     }),
     computed: {
         ...mapState(['common']),

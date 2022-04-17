@@ -15,7 +15,7 @@
             v-if="count==0"
             style="opacity:0.3"
             class="ml-2"
-        >no data yet</v-card-subtitle>
+        >no {{table_name}}s yet</v-card-subtitle>
         <v-expansion-panels>
             <entry-displayer
                 v-for="(item,id) in filtered"

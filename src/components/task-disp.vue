@@ -6,6 +6,18 @@
         :outlined="is_done"
         :color="!is_started ? 'black' : ''"
     >
+
+        <!-- <v-btn
+            fab
+            x-small
+            icon
+            @click="edit"
+            absolute
+            class='edit_task_btn'
+        >
+            <v-icon>mdi-pencil</v-icon>
+        </v-btn> -->
+
         <v-progress-linear
             v-if="color && !dense"
             absolute
@@ -66,13 +78,16 @@
             v-if="!dense && task.description"
             v-html="task.description.replace(/\n/g,'<br/>')"
         ></v-card-subtitle>
+        <entry-updater ref="updater"></entry-updater>
     </v-card>
 </template>
 
 <script>
 import { format } from 'date-fns'
+import EntryUpdater from '@/db_vues/entry-updater.vue'
 export default {
     props: ['task', 'dense'],
+    components: { EntryUpdater },
     watch: {
         '$utils.time.now'() {
             this.$forceUpdate()
@@ -137,10 +152,21 @@ export default {
                 this.$set(this.task, 'started', true)
             }
             this.$db.update_item('task', this.task)
+        },
+        edit() {
+            this.$refs.updater.edit('task', this.task.id)
         }
     }
 }
 </script>
 
 <style>
+.edit_task_btn {
+    bottom: 5px;
+    right: 20px;
+    opacity: 0.1;
+}
+.edit_task_btn:hover {
+    opacity: 1;
+}
 </style>

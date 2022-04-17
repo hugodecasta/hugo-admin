@@ -39,6 +39,7 @@
             <template v-if="edit">
                 <b>{{prop_final_name}}</b>
                 <v-date-picker
+                    first-day-of-week="1"
                     class='ml-5'
                     dense
                     v-model="tmp"
@@ -73,7 +74,7 @@
             >
                 <b>{{prop_final_name}}</b>:
                 <router-link
-                    :to="'/table/'+ref_table+'/'+value"
+                    :to="ref_link"
                     v-if="ref_object"
                 >{{ref_name}}</router-link>
                 <span v-else>{{ref_name}}</span>
@@ -231,6 +232,9 @@ export default {
         },
         ref_table() {
             return this.config.ref
+        },
+        ref_link() {
+            return this.$db.table_item_url(this.ref_table, this.value) ?? '/table/' + this.ref_table + '/' + this.value
         },
         possible_refs() {
             const retrieved_entries = Object.entries(this.$db.table_items(this.config.ref))
