@@ -26,7 +26,7 @@
                 :editable="true"
                 :actionable="actionable"
                 :show_multis="show_multis"
-                @delete="$db.delete_item(table_name,id)"
+                @delete="$db.delete_item(table_name,item.id)"
             >
             </entry-displayer>
         </v-expansion-panels>

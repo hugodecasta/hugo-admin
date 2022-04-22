@@ -14,6 +14,7 @@ const global_database_carrier = new Vue({
         multis: {},
         data: {},
 
+        cache_id_to_table: {},
     }),
     methods: {
 
@@ -51,7 +52,7 @@ const global_database_carrier = new Vue({
         },
         table_multis(table_name) {
             this.check_init()
-            return this.multis[table_name]
+            return [...(this.multis[table_name] ?? []), ...(this.multis['any'] ?? [])]
         },
         update_item(table_name, item) {
             this.check_init()
@@ -102,17 +103,37 @@ const global_database_carrier = new Vue({
             }))
         },
 
+        referencers(item, table_name, referencer_table_name) {
+            return this.items_referencing_me(item, table_name)[referencer_table_name]
+        },
+
         get_referenced_items(table_name, item, referenced_table_name) {
             this.check_init()
+        },
+
+        find_item_table(item_id) {
+            const find_table = () => {
+                const plural_name = Object.keys(this.data).find(table_name => !!this.data[table_name][item_id])
+                return Array.from(plural_name).slice(0, plural_name.length - 1).join('')
+            }
+            const table = this.cache_id_to_table[item_id] ?? find_table()
+            this.cache_id_to_table[item_id] = table
+            return table
+        },
+
+        find_item(item_id) {
+            const table = this.find_item_table(item_id)
+            return this.table_item(table, item_id)
         },
 
         // ----------------------- EDIT
 
         delete_item(table_name, id, force = false) {
+            console.log(table_name, id)
             if (!force && !confirm(`delete ${table_name} "${this.item_name_id(table_name, id)}" ?`)) return
             const item = this.table_item(table_name, id)
             const ref_me = this.items_referencing_me(item, table_name)
-            const ref_tables = Object.keys(ref_me)
+            const ref_tables = Object.entries(ref_me).filter(([, content]) => content.length).map(([table_name]) => table_name)
             if (ref_tables.length && !force) {
                 let action_delete = true
                 if (!confirm(`There are still data attached to this ${table_name}: ${ref_tables.join(', ')} delete theme ?`)) {
@@ -186,6 +207,15 @@ const global_database_carrier = new Vue({
                 }
                 await this.$key_binder(table_aibiss_key, table_object_path)
             }))
+
+            const data_base_full = {
+                config: this.config,
+                multis: this.multis,
+                data: this.data,
+            }
+
+            const bytes = JSON.stringify(data_base_full).length
+            console.log('db loaded', (bytes / 1024) + 'kB')
 
             this.is_init = true
         },

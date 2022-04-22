@@ -21,7 +21,7 @@ export default {
         adder_promise_ok: null
     }),
     methods: {
-        add(table_name, pre_object) {
+        add(table_name, pre_object = {}) {
             this.table_name = table_name
             this.set_obj = JSON.parse(JSON.stringify(pre_object))
             this.show = true

@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { format } from 'date-fns'
 
 const time_state = Vue.observable({ now: Date.now() })
 
@@ -27,11 +28,14 @@ export default {
                                 if (asset.delivered) return null
 
                                 return {
+                                    id: asset.id,
                                     no_action_task: true,
                                     label: 'Order - ' + asset.label,
+                                    table_override: 'asset',
                                     icon: 'package',
                                     link: '/table/asset/' + asset.id,
-                                    description: 'Order checking for ' + asset.label + '\n' + asset.description,
+                                    description: 'Order checking for ' + asset.label + ' - delivery scheduled for ' +
+                                        format(new Date(asset.estimated_deliver_date), 'dd/MM/yyyy') + '\n' + asset.description,
                                     project: asset.project,
                                     deadline: asset.estimated_deliver_date,
                                     started: true,
@@ -44,6 +48,13 @@ export default {
                         }
                     },
                     money: {
+                        compute_taxe_rate(taxes, move_date) {
+                            return taxes.filter(t => {
+                                const is_post_date = !t.start_date || new Date(t.start_date) <= move_date
+                                const is_pre_date = !t.end_date || new Date(t.end_date) >= move_date
+                                return is_post_date && is_pre_date
+                            }).reduce((a, b) => a + b.rate, 0) / 100
+                        },
                         add_taxe(amount, taxe_rate) {
                             return amount / (1 - taxe_rate)
                         },

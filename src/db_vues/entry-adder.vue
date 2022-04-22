@@ -30,10 +30,10 @@
 </template>
 
 <script>
-import entryDisplayer from './entry-displayer.vue'
 import { v4 as uuid } from 'uuid'
 export default {
-    components: { entryDisplayer },
+    name: 'entry-adder',
+    components: { entryDisplayer: () => import('./entry-displayer.vue') },
     props: ['table_name', 'set_obj'],
     data: () => ({
         show: false,

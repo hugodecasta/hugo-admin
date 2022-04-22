@@ -41,7 +41,8 @@ export default {
         const data_base_config = {
             name: 'hugo_admin',
             urls: {
-                project: '/project/${id}'
+                project: '/project/${id}',
+                supplier: '/supplier/${id}',
             },
             namers: {
                 client: '${name}',
@@ -54,6 +55,7 @@ export default {
                 invoice: '${number}',
                 asset: '${label}',
                 task: '${label}',
+                link: '${name}'
             },
             data: {
                 client: {
@@ -62,7 +64,7 @@ export default {
                     zip: { type: 'number' },
                     city: { type: 'string' },
                     telephone: { type: 'phone' },
-                    email: { type: 'string' },
+                    email: { type: 'email' },
                     siren: { type: 'string' },
                 },
                 associate: {
@@ -71,16 +73,17 @@ export default {
                     zip: { type: 'number' },
                     city: { type: 'string' },
                     telephone: { type: 'phone' },
-                    email: { type: 'string' },
+                    email: { type: 'email' },
                     siren: { type: 'string' },
                 },
                 supplier: {
                     name: { type: 'string' },
+                    logo: { type: 'link' },
                     street: { type: 'string' },
                     zip: { type: 'number' },
                     city: { type: 'string' },
                     telephone: { type: 'phone' },
-                    email: { type: 'string' },
+                    email: { type: 'email' },
                     siren: { type: 'string' },
                 },
                 project: {
@@ -91,7 +94,6 @@ export default {
                     pending: { type: 'boolean', def: true },
                     starting_date: { type: 'date', if: 'pending=false' },
                     associates: { array_of: 'associate' },
-                    links: { type: 'array' },
                     labor_hour_cost: { type: 'number', def: 70, if: 'is_rd=false' },
                     hours_spent_prevision: { type: 'number', def: 0, if: 'is_rd=false' },
                     hours_spent_real: { type: 'number', def: 0, if: 'is_rd=false' },
@@ -130,7 +132,9 @@ export default {
                     reduced_name: { type: 'string' },
                     organisme: { type: 'string' },
                     rate: { type: 'number' },
-                    active: { type: 'boolean' }
+                    active: { type: 'boolean' },
+                    start_date: { type: 'date' },
+                    end_date: { type: 'date' },
                 },
                 move: {
                     date: { type: 'date' },
@@ -167,17 +171,29 @@ export default {
                     label: { type: 'string' },
                     order_date: { type: 'date' },
                     delivered: { type: 'boolean' },
+                    delivered_date: { type: 'date', if: 'delivered=true' },
                     estimated_deliver_date: { type: 'date', if: 'delivered=false' },
                     description: { type: 'long-string' },
                     project: { ref: 'project' },
                     move: { ref: 'move' },
                 },
+                link: {
+                    name: { type: 'string' },
+                    link: { type: 'link' },
+                    ref: { ref: 'any' },
+                },
             }
         }
 
         await this.$init_db(data_base_config)
-        console.log('db', this.$db)
         this.db_ready = true
     }
 };
 </script>
+
+<style>
+.flexer {
+    display: flex;
+    align-items: center;
+}
+</style>

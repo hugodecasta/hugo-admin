@@ -78,11 +78,16 @@
                             DONE
                         </span>
                     </v-col>
+                    <!-- ---------------------- LINKS -->
                     <!-- ---------------------- fast actions -->
                     <v-col
                         cols="1"
                         style="display:flex"
                     >
+                        <links-displayer
+                            table_name="project"
+                            :item="project"
+                        ></links-displayer>
                         <v-btn
                             icon
                             @click="edit"
@@ -312,9 +317,10 @@ import MoveDisp from './move-disp.vue'
 import TaskDisp from './task-disp.vue'
 import RandomAdder from '@/db_vues/random-adder.vue'
 import EntryUpdater from '@/db_vues/entry-updater.vue'
+import LinksDisplayer from './links-displayer.vue'
 export default {
     props: ['project', 'standalone', 'btn'],
-    components: { MoveDisp, BudDetail, ListDisplayer, RandomAdder, EntryUpdater, TaskDisp },
+    components: { MoveDisp, BudDetail, ListDisplayer, RandomAdder, EntryUpdater, TaskDisp, LinksDisplayer },
     computed: {
         ref_me() {
             return this.$db.items_referencing_me(this.project, 'project')

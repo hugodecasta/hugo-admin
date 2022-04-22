@@ -223,9 +223,6 @@ export default {
         all_taxes() {
             return Object.values(this.$db.table_items('taxe'))
         },
-        taxe_rate() {
-            return this.all_taxes.filter(t => t.active).reduce((a, b) => a + b.rate, 0) / 100
-        },
         moves() {
             return Object.values(this.$db.table_items('move')).sort((a, b) => new Date(a.date) - new Date(b.date))
         },
@@ -259,7 +256,7 @@ export default {
                 const amount = move.amount
 
                 const balance = is_taxe_pay ? 0 : amount * (is_in ? 1 : -1)
-                const taxed = Math.ceil(amount * (is_in && is_taxed ? this.taxe_rate : 0))
+                const taxed = Math.ceil(amount * (is_in && is_taxed ? this.taxe_for(new Date(move.date)) : 0))
                 const ca = is_taxed && is_in ? amount : 0
                 const final = balance - taxed
                 const payed_past_taxe = is_taxe_pay ? amount : 0
@@ -271,7 +268,8 @@ export default {
 
             const months_data = moves_data.reduce((months, move_data) => {
 
-                const [year, month] = move_data.move.date.split('-')
+                const is_future = !move_data.move.date || new Date(move_data.move.date) > new Date()
+                const [year, month] = move_data.move.date?.split('-') ?? [new Date().getFullYear(), new Date().getMonth() + 1]
                 const month_desi = month + '-' + year
                 const month_name = this.months_names[month - 1]
                 if (!months[month_desi]) months[month_desi] = {
@@ -280,12 +278,17 @@ export default {
                 }
                 const month_data = months[month_desi]
 
+                month_data.moves.unshift(move_data)
+
+                if (!month_data.ca) month_data.ca = 0
+
+                if (is_future) return months
+
                 month_data.balance += move_data.balance
                 month_data.taxed += move_data.taxed
                 month_data.final += move_data.final
                 month_data.ca = (month_data.ca ?? 0) + move_data.ca
                 month_data.taxe_remove += move_data.payed_past_taxe
-                month_data.moves.unshift(move_data)
 
                 return months
             }, {})
@@ -344,6 +347,9 @@ export default {
         }
     },
     methods: {
+        taxe_for(date) {
+            return this.$utils.money.compute_taxe_rate(this.all_taxes, date)
+        },
         year_trim(year, trim) {
             return this.budget_data.years[year].trims[trim]
         },

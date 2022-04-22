@@ -47,8 +47,8 @@
             <template v-if="!is_done">
                 <span
                     :class='["mr-3",color_class]'
-                    v-if="days_left"
-                >{{days_left}} days left</span>
+                    v-if="days_left_disp"
+                >{{days_left_disp}}</span>
                 <span
                     class='mr-3'
                     v-else
@@ -79,15 +79,22 @@
             v-html="task.description.replace(/\n/g,'<br/>')"
         ></v-card-subtitle>
         <entry-updater ref="updater"></entry-updater>
+        <links-displayer
+            :table_name="task.table_override ? task.table_override : 'task'"
+            :item="task"
+            :absolute="true"
+            :dark="!is_done"
+        ></links-displayer>
     </v-card>
 </template>
 
 <script>
 import { format } from 'date-fns'
 import EntryUpdater from '@/db_vues/entry-updater.vue'
+import LinksDisplayer from './links-displayer.vue'
 export default {
     props: ['task', 'dense'],
-    components: { EntryUpdater },
+    components: { EntryUpdater, LinksDisplayer },
     watch: {
         '$utils.time.now'() {
             this.$forceUpdate()
@@ -126,8 +133,17 @@ export default {
         },
         days_left() {
             if (!this.task.deadline) return null
-            const diff = (new Date(this.task.deadline)).getTime() - this.$utils.time.now
+            const deadline = new Date(this.task.deadline)
+            deadline.setHours(0, 0, 0, 0)
+            const now = new Date(this.$utils.time.now)
+            now.setHours(0, 0, 0, 0)
+            const diff = deadline.getTime() - now.getTime()
             return Math.ceil(diff / 1000 / 60 / 60 / 24)
+        },
+        days_left_disp() {
+            if (this.days_left == null) return null
+            const days = 'day' + (Math.abs(this.days_left) > 1 ? 's' : '')
+            return this.days_left == 0 ? 'today' : this.days_left < 1 ? `${-this.days_left} ${days} late` : `${this.days_left} ${days} left`
         },
         progression() {
             if (!this.is_in_progress || !this.task.deadline) return null

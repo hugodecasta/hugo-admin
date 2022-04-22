@@ -8,7 +8,12 @@
         <v-card-title>
             {{move_data.label}}
             <v-card-subtitle v-if="date">
-                {{format(new Date(move.date),'dd/MM/yyyy')}}
+                <template v-if="move.date">
+                    {{format(new Date(move.date),'dd/MM/yyyy')}}
+                </template>
+                <template v-else>
+                    Pending
+                </template>
             </v-card-subtitle>
             <span
                 v-if="!move_data.past"
@@ -65,7 +70,7 @@ export default {
                 ]))
             const total_taxe = -Object.values(taxes).reduce((a, b) => a + b, 0)
             const final_amount = this.amount_round(base_amount + total_taxe)
-            const past = new Date(this.move.date) < new Date()
+            const past = this.move.date && new Date(this.move.date) < new Date()
             return { base_amount, taxe_rate, taxes, total_taxe, final_amount, past, ...this.move }
         }
     },

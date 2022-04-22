@@ -22,6 +22,8 @@ add_route('estimater')
 add_route('projects')
 add_route('budget')
 add_route('project', '/project/:project_id')
+add_route('suppliers')
+add_route('supplier', '/supplier/:supplier_id')
 
 // add_route('clients')
 // add_route('moves')

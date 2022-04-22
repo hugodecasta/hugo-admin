@@ -54,7 +54,7 @@ import Budget from './budget.vue'
 export default {
     components: { allTasks, Budget, Project },
     data: () => ({
-        forbidden_routes: ['table-edit', 'project', 'item-edit']
+        forbidden_routes: ['table-edit', 'project', 'item-edit', 'supplier']
     }),
     computed: {
         ...mapState(['common']),

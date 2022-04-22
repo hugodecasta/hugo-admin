@@ -18,6 +18,27 @@
             ></v-text-field>
             <v-card-text v-else> <b>{{prop_final_name}}</b>: <a :href="'tel:'+value">{{value}}</a></v-card-text>
         </span>
+        <span v-if="type == 'email'">
+            <v-text-field
+                :label="prop_final_name"
+                v-if="edit"
+                v-model="tmp"
+                @keydown.enter="validate_tmp"
+            ></v-text-field>
+            <v-card-text v-else> <b>{{prop_final_name}}</b>: <a :href="'mailto:'+value">{{value}}</a></v-card-text>
+        </span>
+        <span v-if="type == 'link'">
+            <v-text-field
+                :label="prop_final_name"
+                v-if="edit"
+                v-model="tmp"
+                @keydown.enter="validate_tmp"
+            ></v-text-field>
+            <v-card-text v-else> <b>{{prop_final_name}}</b>: <a
+                    :href="value"
+                    target="_blank"
+                >{{value.length>100 ? 'click to goto link' : value}}</a></v-card-text>
+        </span>
         <span v-else-if="type == 'long-string'">
             <v-textarea
                 :label="prop_final_name"
@@ -36,15 +57,21 @@
             <v-card-text v-else> <b>{{prop_final_name}}</b>: {{value ? 'yes' : 'no'}}</v-card-text>
         </span>
         <span v-else-if="type == 'date'">
-            <template v-if="edit">
+            <div v-if="edit">
                 <b>{{prop_final_name}}</b>
+                <v-btn
+                    icon
+                    @click="tmp = undefined"
+                >
+                    <v-icon>mdi-close</v-icon>
+                </v-btn>
                 <v-date-picker
                     first-day-of-week="1"
                     class='ml-5'
                     dense
                     v-model="tmp"
                 ></v-date-picker>
-            </template>
+            </div>
             <v-card-text v-else> <b>{{prop_final_name}}</b>: {{$db.date_format(value)}}</v-card-text>
         </span>
         <span v-else-if="type == 'number'">
@@ -57,28 +84,15 @@
             ></v-text-field>
             <v-card-text v-else> <b>{{prop_final_name}}</b>: {{value}}</v-card-text>
         </span>
-        <span v-else-if="ref">
-            <v-select
-                :label="prop_final_name"
-                v-if="edit"
-                v-model="tmp"
-                :items='Object.values(possible_refs)'
-                item-value="id"
-                item-text="tmp_text"
-                @change="validate_tmp"
-            >
-            </v-select>
-            <v-card-text
-                v-else
-                style="info--text"
-            >
-                <b>{{prop_final_name}}</b>:
-                <router-link
-                    :to="ref_link"
-                    v-if="ref_object"
-                >{{ref_name}}</router-link>
-                <span v-else>{{ref_name}}</span>
-            </v-card-text>
+        <span v-else-if="is_ref">
+            <ref-viewer
+                :prop_name='prop_name'
+                v-model='tmp'
+                :config='config'
+                :edit='edit'
+                :on_the_fly='on_the_fly'
+                :item='item'
+            ></ref-viewer>
         </span>
         <span v-else-if="is_select">
             <v-select
@@ -90,49 +104,6 @@
             >
             </v-select>
             <v-card-text v-else> <b>{{prop_final_name}}</b>: {{value}}</v-card-text>
-        </span>
-        <span v-else-if="is_array_of">
-            <div v-if="edit">
-                <b>
-                    {{prop_final_name}}
-                    <v-btn
-                        icon
-                        @click="tmp.push('- please select -')"
-                    >
-                        <v-icon>mdi-plus</v-icon>
-                    </v-btn>
-                </b>
-                <v-card
-                    class='pa-3'
-                    elevation="0"
-                    outlined
-                >
-                    <v-row
-                        v-for="(sub_ref,index) in tmp"
-                        :key="index"
-                    >
-                        <v-col>
-                            <v-select
-                                v-model="tmp[index]"
-                                :items='Object.values(possible_refs_array_of)'
-                                item-value="id"
-                                item-text="tmp_text"
-                                @change="validate_tmp"
-                            >
-                            </v-select>
-                        </v-col>
-                        <v-col cols="3">
-                            <v-btn
-                                icon
-                                @click="remove_ref_item(sub_ref)"
-                            >
-                                <v-icon>mdi-close</v-icon>
-                            </v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </div>
-            <v-card-text v-else> <b>{{prop_final_name}}</b>: {{array_of_disp}}</v-card-text>
         </span>
         <span v-else-if="is_array">
             <v-combobox
@@ -160,7 +131,9 @@
 </template>
 
 <script>
+import refViewer from './ref-viewer.vue'
 export default {
+    components: { refViewer },
     name: 'prop-displayer',
     props: ['prop_name', 'value', 'config', 'edit', 'on_the_fly', 'item'],
     data: () => ({
@@ -218,8 +191,8 @@ export default {
         is_array() {
             return this.config.type == 'array'
         },
-        is_array_of() {
-            return !!this.config.array_of
+        is_ref() {
+            return !!this.config.ref || !!this.config.array_of
         },
         is_select() {
             return !!this.config.select
@@ -227,38 +200,9 @@ export default {
         array_of_table() {
             return this.config.array_of
         },
-        ref() {
-            return this.config.ref
-        },
         ref_table() {
             return this.config.ref
         },
-        ref_link() {
-            return this.$db.table_item_url(this.ref_table, this.value) ?? '/table/' + this.ref_table + '/' + this.value
-        },
-        possible_refs() {
-            const retrieved_entries = Object.entries(this.$db.table_items(this.config.ref))
-                .map(([id, elm]) => [id, { ...elm, tmp_text: this.$db.item_name(this.ref_table, elm) }])
-            const retrieved = Object.fromEntries(retrieved_entries)
-            return this.nullable ? Object.fromEntries([[null, { tmp_text: '- no selection -' }], ...retrieved_entries]) : retrieved
-        },
-        possible_refs_array_of() {
-            return Object.values(this.$db.table_items(this.config.array_of))
-                .map((elm) => ({ ...elm, tmp_text: this.$db.item_name(this.array_of_table, elm) }))
-        },
-        ref_object() {
-            return Object.entries(this.possible_refs).find(([id]) => id == this.value)?.[1]
-        },
-        array_of_namer() {
-            return this.$db.table_namer(this.config.array_of)
-        },
-        ref_name() {
-            return this.ref_object ? this.$db.item_name(this.ref_table, this.ref_object) : '- no selection -'
-        },
-        array_of_disp() {
-            if (!this.tmp || !this.tmp.length) return '- no ' + this.config.array_of + 's -'
-            return this.tmp?.map(id => this.$db.item_name_id(this.config.array_of, id) ?? '- empty item -').join(', ')
-        }
     },
     methods: {
         reset() {
