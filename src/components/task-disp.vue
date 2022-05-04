@@ -68,11 +68,27 @@
                 <v-icon>mdi-{{action_icon}}</v-icon>
             </v-btn>
         </v-card-title>
-        <v-card-text v-if="is_in_progress">
+        <v-card-text v-if="is_in_progress && !is_infinite">
             <v-progress-linear
                 :color="color ? color : action_color"
                 :value="progression"
             ></v-progress-linear>
+            <div class='days_container'>
+                <div
+                    class='days_from_beginning'
+                    :style="{
+                        width:((days_from_beginning*24*60*60*1000)/diff_from_beginning)*100+'%'
+                    }"
+                >
+                    <div
+                        v-for="day in days_from_beginning"
+                        :key="day"
+                        :style="{ borderRight: `1px solid var(--v-${color ? color : 'success'}-base`}"
+                        :class="['day',days_from_beginning - day<days_left ? 'comming' : '']"
+                    >
+                    </div>
+                </div>
+            </div>
         </v-card-text>
         <v-card-subtitle
             v-if="!dense && task.description"
@@ -95,11 +111,6 @@ import LinksDisplayer from './links-displayer.vue'
 export default {
     props: ['task', 'dense'],
     components: { EntryUpdater, LinksDisplayer },
-    watch: {
-        '$utils.time.now'() {
-            this.$forceUpdate()
-        }
-    },
     computed: {
         is_started() {
             return this.task.started && !!this.task.start_date
@@ -109,6 +120,9 @@ export default {
         },
         is_in_progress() {
             return this.is_started && !this.is_done
+        },
+        is_infinite() {
+            return !this.is_done && !this.days_left_disp
         },
         is_time_alert() {
             return (!this.is_started && this.days_left && this.days_left < 3) || (this.is_in_progress && this.days_left < 0)
@@ -133,10 +147,8 @@ export default {
         },
         days_left() {
             if (!this.task.deadline) return null
-            const deadline = new Date(this.task.deadline)
-            deadline.setHours(0, 0, 0, 0)
-            const now = new Date(this.$utils.time.now)
-            now.setHours(0, 0, 0, 0)
+            const deadline = this.$utils.clean_date(this.task.deadline)
+            const now = this.$utils.clean_date(this.$utils.time.now)
             const diff = deadline.getTime() - now.getTime()
             return Math.ceil(diff / 1000 / 60 / 60 / 24)
         },
@@ -145,13 +157,20 @@ export default {
             const days = 'day' + (Math.abs(this.days_left) > 1 ? 's' : '')
             return this.days_left == 0 ? 'today' : this.days_left < 1 ? `${-this.days_left} ${days} late` : `${this.days_left} ${days} left`
         },
-        progression() {
+        diff_from_beginning() {
             if (!this.is_in_progress || !this.task.deadline) return null
-            const start = new Date(this.task.start_date).getTime()
-            const deadline = new Date(this.task.deadline).getTime()
+            const start = this.$utils.clean_date(this.task.start_date).getTime()
+            const deadline = this.$utils.clean_date(this.task.deadline).getTime() //+ (1000 * 60 * 60 * 24)
             const diff = deadline - start
+            return diff
+        },
+        days_from_beginning() {
+            return Math.ceil(this.diff_from_beginning / 1000 / 60 / 60 / 24)
+        },
+        progression() {
+            const start = this.$utils.clean_date(this.task.start_date).getTime()
             const now = this.$utils.time.now - start
-            return (now / diff) * 100
+            return (now / this.diff_from_beginning) * 100
         }
     },
     methods: {
@@ -184,5 +203,22 @@ export default {
 }
 .edit_task_btn:hover {
     opacity: 1;
+}
+.days_from_beginning {
+    margin-top: 5px;
+    margin-bottom: -10px;
+    width: 100%;
+    height: 5px;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+.days_from_beginning .day {
+    height: 100%;
+    width: 100%;
+    border-right: 1px solid var(--v-success-base);
+}
+.days_from_beginning .day.comming {
+    opacity: 0.5;
 }
 </style>

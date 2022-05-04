@@ -609,7 +609,7 @@ export default {
             const move = await this.$refs.random_adder.add('move', { project: this.project.id, type: 'out' })
             await this.$refs.random_adder.add('asset', {
                 project: this.project.id, label: move.label, move: move.id,
-                order_date: move.date, description: move.description,
+                supplier: move.supplier, order_date: move.date, description: move.description,
             })
         },
     }

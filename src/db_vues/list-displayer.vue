@@ -18,9 +18,9 @@
         >no {{table_name}}s yet</v-card-subtitle>
         <v-expansion-panels>
             <entry-displayer
-                v-for="(item,id) in filtered"
+                v-for="item in filtered"
                 :dense="dense"
-                :key="id"
+                :key="item.id"
                 :item="item"
                 :table_name="table_name"
                 :editable="true"
@@ -42,7 +42,7 @@ export default {
     props: ['table_name', 'filters', 'items', 'actionable', 'show_multis', 'dense', 'title', 'add_btn'],
     computed: {
         filtered() {
-            return this.items ?? this.$db.table_items_filtered(this.table_name, this.filters ?? [])
+            return this.items ?? Object.values(this.$db.table_items_filtered(this.table_name, this.filters ?? [])).reverse()
         },
         count() {
             return Object.keys(this.filtered).length

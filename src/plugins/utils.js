@@ -3,7 +3,13 @@ import { format } from 'date-fns'
 
 const time_state = Vue.observable({ now: Date.now() })
 
-setInterval(() => { Vue.set(time_state, 'now', Date.now()) }, 1000 * 60 * 30)
+function update_time() {
+    const date = new Date()
+    Vue.set(time_state, 'now', date.getTime())
+}
+
+setInterval(update_time, 1000 * 60 * 30)
+update_time()
 
 export default {
     install(vue) {
@@ -11,6 +17,11 @@ export default {
             beforeCreate() {
                 this.$utils = {
                     time: time_state,
+                    clean_date(date_str) {
+                        const date = new Date(date_str)
+                        date.setHours(0, 0, 0)
+                        return date
+                    },
                     tasks: {
                         sort(tasks) {
                             function task_score(task) {
@@ -27,6 +38,10 @@ export default {
                             return assets.map(asset => {
                                 if (asset.delivered) return null
 
+                                const deliver_test = asset.estimated_deliver_date ?
+                                    ' - delivery scheduled for ' + format(new Date(asset.estimated_deliver_date), 'dd/MM/yyyy') :
+                                    ''
+
                                 return {
                                     id: asset.id,
                                     no_action_task: true,
@@ -34,8 +49,7 @@ export default {
                                     table_override: 'asset',
                                     icon: 'package',
                                     link: '/table/asset/' + asset.id,
-                                    description: 'Order checking for ' + asset.label + ' - delivery scheduled for ' +
-                                        format(new Date(asset.estimated_deliver_date), 'dd/MM/yyyy') + '\n' + asset.description,
+                                    description: 'Order checking for ' + asset.label + deliver_test + '\n' + asset.description,
                                     project: asset.project,
                                     deadline: asset.estimated_deliver_date,
                                     started: true,

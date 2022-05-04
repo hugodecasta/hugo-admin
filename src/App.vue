@@ -1,5 +1,15 @@
 <template>
     <v-app>
+        <v-btn
+            icon
+            fixed
+            bottom
+            left
+            style="z-index:100000"
+            to="/"
+        >
+            <v-icon>mdi-home</v-icon>
+        </v-btn>
         <v-main v-if="(common.user && db_ready) || connected === false">
             <router-view />
         </v-main>
@@ -22,6 +32,12 @@ export default {
         connected: null,
         db_ready: false,
     }),
+
+    watch: {
+        '$utils.time.now'() {
+            this.$forceUpdate()
+        }
+    },
 
     computed: {
         ...mapState(['common']),

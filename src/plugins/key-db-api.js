@@ -129,14 +129,14 @@ const global_database_carrier = new Vue({
         // ----------------------- EDIT
 
         delete_item(table_name, id, force = false) {
-            console.log(table_name, id)
             if (!force && !confirm(`delete ${table_name} "${this.item_name_id(table_name, id)}" ?`)) return
             const item = this.table_item(table_name, id)
             const ref_me = this.items_referencing_me(item, table_name)
-            const ref_tables = Object.entries(ref_me).filter(([, content]) => content.length).map(([table_name]) => table_name)
+            const ref_tables = Object.entries(ref_me)
+                .filter(([, content]) => Object.keys(content).length).map(([table_name]) => table_name)
             if (ref_tables.length && !force) {
                 let action_delete = true
-                if (!confirm(`There are still data attached to this ${table_name}: ${ref_tables.join(', ')} delete theme ?`)) {
+                if (!confirm(`There are still data attached to this ${table_name}: ${ref_tables.map(t => '\n - ' + t)}\n delete them ?`)) {
                     if (!confirm('Set their reference to null ?')) return
                     else action_delete = false
                 }

@@ -52,7 +52,10 @@
                         </v-btn>
                         <!-- ------------------- orders -->
                         <v-spacer />
-                        <v-btn color="primary">
+                        <v-btn
+                            color="primary"
+                            @click="add_asset"
+                        >
                             <v-icon left>mdi-plus</v-icon>
                             asset
                         </v-btn>
@@ -128,6 +131,7 @@
             </v-row>
         </v-expansion-panel-content>
         <entry-updater ref='entry_updater'></entry-updater>
+        <random-adder ref='random_adder'></random-adder>
     </v-expansion-panel>
 </template>
 
@@ -137,9 +141,10 @@ import LinksDisplayer from './links-displayer.vue'
 import EntryDisplayer from '@/db_vues/entry-displayer.vue'
 import MoveDisp from './move-disp.vue'
 import TaskDisp from './task-disp.vue'
+import RandomAdder from '@/db_vues/random-adder.vue'
 export default {
     props: ['supplier', 'standalone'],
-    components: { EntryUpdater, LinksDisplayer, EntryDisplayer, MoveDisp, TaskDisp },
+    components: { EntryUpdater, LinksDisplayer, EntryDisplayer, MoveDisp, TaskDisp, RandomAdder },
     computed: {
         assets() {
             return Object.values(this.$db.referencers(this.supplier, 'supplier', 'move'))
@@ -150,6 +155,14 @@ export default {
         update() {
             this.$refs.entry_updater.edit('supplier', this.supplier.id)
         },
+        async add_asset() {
+            const move = await this.$refs.random_adder.add('move', { supplier: this.supplier.id, type: 'out' })
+            if (!move) return
+            await this.$refs.random_adder.add('asset', {
+                supplier: this.supplier.id, label: move.label, move: move.id,
+                order_date: move.date, description: move.description,
+            })
+        }
     }
 }
 </script>
